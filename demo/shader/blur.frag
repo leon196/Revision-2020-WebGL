@@ -2,7 +2,6 @@ precision mediump float;
 
 uniform sampler2D frame;
 uniform vec2 resolution;
-uniform float time;
 uniform bool flip;
 uniform vec2 direction;
 
@@ -50,5 +49,5 @@ void main() {
   if (flip) {
     uv.y = 1.0 - uv.y;
   }
-	gl_FragColor = blur9(frame, uv, resolution, direction);
+	gl_FragColor = blur5(frame, uv, resolution, direction);
 }

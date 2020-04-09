@@ -6,26 +6,22 @@ attribute vec2 anchor, quantity;
 uniform mat4 viewProjection;
 uniform vec3 camera;
 uniform vec2 resolution;
-uniform float time;
 
 varying vec3 vColor;
 varying vec2 vUV;
 
-const float PI = 3.1415;
-const float TAU = 6.283;
-
-mat2 rotation (float a) { float c=cos(a),s=sin(a); return mat2(c,-s,s,c); }
-float random (in vec2 st) { return fract(sin(dot(st.xy,vec2(12.9898,78.233)))*43758.5453123); }
-
 vec3 curve (float ratio) {
 	// vec3 seed = vec3(random(anchor.yy), random(anchor.yy+.1542), random(anchor.yy*.5748)) * 2. - 1.;//position.xyz;
 	float salt = random(quantity.xy);
-	vec3 p = normalize(position.xyz) * max(2., length(position.xyz) * 3.);//mod(time, 1.) * 2.;
+	vec3 p = normalize(position.xyz) * 6.;//mod(time, 1.) * 2.;
+	// p.y *= 0.01;
 	p.xz *= rotation(ratio +time + p.x * TAU);
 	p.yz *= rotation(ratio +time + p.y * TAU);
-	p.y += 3.5;
 	vec3 lod = vec3(mix(1., 8., salt)*vec3(1,.2,1));
 	p = mix(ceil(p*lod)/lod, p, ratio);
+	// p.y 
+	p *= 0.5 + 0.1*abs(sin(time*4. + ratio * PI));
+	p.y += 4.;
 	// p += (1.-ratio) * seed * .1;
 	return p;
 }

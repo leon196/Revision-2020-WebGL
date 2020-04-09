@@ -8,8 +8,12 @@ window.onload = function () {
 
 	var music = new Audio('animation/music.mp3');
 
+loadFiles('shader/',['common.glsl'], function(preload) {
+
 // shaders file to load
 loadFiles('shader/',['screen.vert','blur.frag','text.vert','screen.frag','tree.vert','leaf.vert','tint.frag','circle.frag','skybox.vert','skybox.frag','lines.vert'], function(shaders) {
+
+	shaders['common.glsl'] = preload['common.glsl'];
 
 // animation data
 loadFiles('animation/',['animation.json'], function(animationData) {
@@ -86,7 +90,7 @@ const geometryQuad = twgl.createBufferInfoFromArrays(gl, {
 		var x = v3.normalize(v3.cross([0,1,0],z));
 		var y = v3.normalize(v3.cross(z,x));
 		cameraMatrix  = m4.lookAt(camera, target, [0,1,0]);
-		var fieldOfView = 50;//20+60*getAnimation('fov', elapsed);
+		var fieldOfView = 70;//20+60*getAnimation('fov', elapsed);
 		projection = m4.perspective(fieldOfView*Math.PI/180, gl.canvas.width/gl.canvas.height, 0.01, 200.0);
 		uniforms.camera = camera;
 		uniforms.target = target;
@@ -172,7 +176,7 @@ const geometryQuad = twgl.createBufferInfoFromArrays(gl, {
 	function loadMaterials() {
 		Object.keys(materialMap).forEach(function(key) {
 			materials[key] = twgl.createProgramInfo(gl,
-				[shaders[materialMap[key][0]],shaders[materialMap[key][1]]]); });
+				[shaders['common.glsl']+shaders[materialMap[key][0]],shaders['common.glsl']+shaders[materialMap[key][1]]]); });
 	}
 	function setupMotionBlur() {
 		uniforms.motionFrames = motionFrames;
@@ -242,6 +246,7 @@ const geometryQuad = twgl.createBufferInfoFromArrays(gl, {
 		document.getElementById('body').style.cursor = 'default';
 	}
 	*/
+});
 });
 });
 });

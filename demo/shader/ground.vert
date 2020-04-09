@@ -1,4 +1,3 @@
-precision mediump float;
 
 attribute vec4 position;
 attribute vec2 anchor, quantity;
@@ -6,16 +5,9 @@ attribute vec2 anchor, quantity;
 uniform mat4 viewProjection;
 uniform vec3 camera;
 uniform vec2 resolution;
-uniform float time;
 
 varying vec3 vColor;
 varying vec2 vUV;
-
-const float PI = 3.1415;
-const float TAU = 6.283;
-
-mat2 rotation (float a) { float c=cos(a),s=sin(a); return mat2(c,-s,s,c); }
-float random (in vec2 st) { return fract(sin(dot(st.xy,vec2(12.9898,78.233)))*43758.5453123); }
 
 vec3 curve (float ratio) {
 	// vec3 seed = vec3(random(anchor.yy), random(anchor.yy+.1542), random(anchor.yy*.5748)) * 2. - 1.;//position.xyz;

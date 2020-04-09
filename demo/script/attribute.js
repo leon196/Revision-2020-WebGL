@@ -8,7 +8,7 @@ var attributesTree = { position: [] };
 		attributesTree.position.push(Math.random(), Math.random(), Math.random());
 
 	var attributesLeaf = { position: [] };
-	for (var i = 0; i < 1000; ++i) 
+	for (var i = 0; i < 2000; ++i) 
 		attributesLeaf.position.push(Math.random(), Math.random(), Math.random());
 
 	var attributesLines = { position: [] };
