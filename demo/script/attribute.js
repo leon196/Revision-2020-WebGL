@@ -1,20 +1,24 @@
 
-var geometryTree, geometryLeaf, geometrySkybox, geometryMesh;
-
-var attributesTree = { position: [] };
-for (var i = 0; i < 200; ++i) {
-	attributesTree.position.push(Math.random(), Math.random(), Math.random());
-}
-
-var attributesLeaf = { position: [] };
-for (var i = 0; i < 4000; ++i) {
-	attributesLeaf.position.push(Math.random(), Math.random(), Math.random());
-}
+var geometryTree, geometryLeaf, geometrySkybox, geometryLines, geometryMesh;
 
 function generateBuffers (gl, meshes) {
+
+var attributesTree = { position: [] };
+	for (var i = 0; i < 200; ++i) 
+		attributesTree.position.push(Math.random(), Math.random(), Math.random());
+
+	var attributesLeaf = { position: [] };
+	for (var i = 0; i < 1000; ++i) 
+		attributesLeaf.position.push(Math.random(), Math.random(), Math.random());
+
+	var attributesLines = { position: [] };
+	for (var i = 0; i < 100; ++i) 
+		attributesLines.position.push(Math.random(), Math.random(), Math.random());
+
 	geometryTree = twgl.createBufferInfoFromArrays(gl, particles(attributesTree, [1,40])[0]);
-	geometryLeaf = twgl.createBufferInfoFromArrays(gl, particles(attributesLeaf, [1,1])[0]);
-	geometrySkybox = twgl.primitives.createSphereBufferInfo(gl, 1000, 8, 8);
+	geometryLeaf = twgl.createBufferInfoFromArrays(gl, particles(attributesLeaf, [1,8])[0]);
+	geometryLines = twgl.createBufferInfoFromArrays(gl, particles(attributesLines, [1,40])[0]);
+	geometrySkybox = twgl.primitives.createSphereBufferInfo(gl, 100, 8, 8);
 
 	geometryMesh = {};
 	Object.keys(meshes).forEach(function(item) {

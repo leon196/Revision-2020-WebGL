@@ -20,7 +20,7 @@ const float _BranchAnimation = 0.0;
 
 const float _BranchCount = 30.0;
 const float _SubbranchHeight = 0.8;
-const float _SubbranchOffset = 0.4;
+const float _SubbranchOffset = 0.8;
 
 const float _Thin = 0.1;
 const float _ThinSubbranch = 0.1;
@@ -45,7 +45,7 @@ vec3 trunk (float ratio, float salt) {
 }
 
 vec3 branch (float id, float ratio, float salt) {
-	vec3 p = trunk(0.2+0.7*mod((id*.2354),1.0), salt);
+	vec3 p = trunk(0.5+0.5*mod((id*.2354),1.0), salt);
 	vec3 t = p;
 	p.yz *= rotation(.3 * ratio * sin(id * .1 + ratio) + .05 * ratio * sin(ratio * 20.));
 	p.xz *= rotation(TAU * sin(id * .2) * 4. + animation*.4 * sin(time + ratio * TAU * 2.));
@@ -80,10 +80,12 @@ void main () {
 	float thin = 0.01+pepper*.03;
 	float normal_epsilon = 0.01;
 
+	thin *= sin(y * PI);
+
 	vec2 q = quantity;
 
 	// pos = subbranch(mod(q.y, 100.), fract(curry+time), salt);
-	pos = subbranch(q.y, fract(curry+time), salt);
+	pos = subbranch(q.y, sin(spice * TAU + y * 3.)*0.5+0.5, salt);
 
 
 	// vec3 forward = normalize(pos.xyz+vec3(0,100,0));
@@ -94,16 +96,20 @@ void main () {
 
 	float camdist = length(camera-pos.xyz);
 
-	vec3 forward = normalize(camera-pos.xyz);
-	vec3 right = normalize(cross(forward, vec3(0,1,0)));
-	vec3 up = normalize(cross(forward, right));
+	vec3 forward = normalize(subbranch(q.y, sin(spice * TAU + y * 3. + .01)*0.5+0.5, salt) - pos);
+	// vec3 forward = normalize(camera-pos.xyz);
+	// vec3 right = normalize(cross(forward, vec3(0,1,0)));
+	// vec3 up = normalize(cross(forward, right));
+	vec3 right = -normalize(cross(-normalize(pos - camera), forward));
+	vec3 up = normalize(cross(right, forward));
 	pos += (right * anchor.x + up * anchor.y) * thin;
 
 	// vColor = mix(vec3(0.235, 0.588, 0.282), vec3(0.662, 0.894, 0.345), sin((salt*.4 + camdist)*TAU)*.5+.5);
-	vColor = mix(vec3(0.211, 0.427, 0.925), vec3(0.458, 0.882, 1), sin((spice*.5 + camdist*2.))*.5+.5);
+	vColor = mix(vec3(0.211, 0.427, 0.925), vec3(0.458, 0.882, 1), sin((spice + camdist*2.))*.5+.5);
 	// vColor = mix(vec3(0.901, 0.419, 0), vColor, (anc.y+1.0)*.1+.6);
 	// vColor = vec3(1);
 	// vColor = vColor.bgr;
+	// vColor = vColor.bbb * .5;
 
 	vUV = anchor;
 	gl_Position = viewProjection * vec4(pos, 1);

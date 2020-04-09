@@ -9,7 +9,7 @@ window.onload = function () {
 	var music = new Audio('animation/music.mp3');
 
 // shaders file to load
-loadFiles('shader/',['screen.vert','blur.frag','text.vert','screen.frag','tree.vert','leaf.vert','tint.frag','circle.frag','skybox.vert','skybox.frag'], function(shaders) {
+loadFiles('shader/',['screen.vert','blur.frag','text.vert','screen.frag','tree.vert','leaf.vert','tint.frag','circle.frag','skybox.vert','skybox.frag','lines.vert'], function(shaders) {
 
 // animation data
 loadFiles('animation/',['animation.json'], function(animationData) {
@@ -32,6 +32,7 @@ loadFiles('animation/',textList, function(meshes) {
 		'text': 			['text.vert', 			'tint.frag'],
 		'tree': 			['tree.vert', 			'tint.frag'],
 		'leaf': 			['leaf.vert', 			'circle.frag'],
+		'lines': 			['lines.vert', 			'tint.frag'],
 		'skybox': 		['skybox.vert', 		'skybox.frag'],
 		'blur': 			['screen.vert', 		'blur.frag'],
 		'motion': 		['screen.vert', 		'motion.frag'],
@@ -75,7 +76,7 @@ const geometryQuad = twgl.createBufferInfoFromArrays(gl, {
 
 		elapsed = timeElapsed;
 		// elapsed = music.currentTime;
-		
+
 		var deltaTime = elapsed - uniforms.time;
 		uniforms.time = elapsed;
 		
@@ -86,7 +87,7 @@ const geometryQuad = twgl.createBufferInfoFromArrays(gl, {
 		var y = v3.normalize(v3.cross(z,x));
 		cameraMatrix  = m4.lookAt(camera, target, [0,1,0]);
 		var fieldOfView = 50;//20+60*getAnimation('fov', elapsed);
-		projection = m4.perspective(fieldOfView*Math.PI/180, gl.canvas.width/gl.canvas.height, 0.01, 100.0);
+		projection = m4.perspective(fieldOfView*Math.PI/180, gl.canvas.width/gl.canvas.height, 0.01, 200.0);
 		uniforms.camera = camera;
 		uniforms.target = target;
 
@@ -96,20 +97,21 @@ const geometryQuad = twgl.createBufferInfoFromArrays(gl, {
 		gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
 		gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 		uniforms.viewProjection = m4.multiply(projection, m4.inverse(cameraMatrix));
-		// gl.enable(gl.DEPTH_TEST);
-		// gl.enable(gl.CULL_FACE);
-		// gl.cullFace(gl.BACK);
+		gl.enable(gl.DEPTH_TEST);
+		gl.enable(gl.CULL_FACE);
+		gl.cullFace(gl.BACK);
 
 		// tree and leaves
 		draw(materials['tree'], geometryTree, gl.TRIANGLES);
 		draw(materials['leaf'], geometryLeaf, gl.TRIANGLES);
+		// draw(materials['lines'], geometryLines, gl.TRIANGLES);
 
 		// text
 		drawMesh('cookie');
 		drawMesh('revision');
 
 		// skybox
-		// gl.cullFace(gl.FRONT);
+		gl.cullFace(gl.FRONT);
 		draw(materials['skybox'], geometrySkybox, gl.TRIANGLES);
 
 		// motion blur
@@ -141,8 +143,8 @@ const geometryQuad = twgl.createBufferInfoFromArrays(gl, {
 	}
 	function drawFrame(shader, geometry, frame) {
 		gl.bindFramebuffer(gl.FRAMEBUFFER, frame);
-		// gl.disable(gl.CULL_FACE);
-		// gl.disable(gl.DEPTH_TEST);
+		gl.disable(gl.CULL_FACE);
+		gl.disable(gl.DEPTH_TEST);
 		gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
 		gl.clearColor(0,0,0,1);
 		gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);

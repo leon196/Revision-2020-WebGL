@@ -43,7 +43,7 @@ vec3 trunk (float ratio, float salt) {
 }
 
 vec3 branch (float id, float ratio, float salt) {
-	vec3 p = trunk(0.2+0.7*mod((id*.2354),1.0), salt);
+	vec3 p = trunk(0.5+0.5*mod((id*.2354),1.0), salt);
 	vec3 t = p;
 	p.yz *= rotation(.3 * ratio * sin(id * .1 + ratio) + .05 * ratio * sin(ratio * 20.));
 	p.xz *= rotation(TAU * sin(id * .2) * 4. + animation*.4 * sin(time + ratio * TAU * 2.));
